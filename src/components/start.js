@@ -1,21 +1,18 @@
 import React, { useRef } from 'react';
-
 import './start.css';
 
-const StartGame = new Event('StartGame');
-
-const Start = ({player}) => {
+const Start = () => {
     const inputRef = useRef(null);
 
     function start () {
-        player.setName(inputRef.current.value);
+        const StartGame = new CustomEvent('StartGame', { detail: { name: inputRef.current.value } });
         document.dispatchEvent(StartGame);
     }
 
     return (
-        <div>
+        <div className="start">
             <form>
-                <label for="name">Player name: </label>
+                <label htmlFor="name">Player name: </label>
                 <input  id="name" 
                         type="text"
                         ref={inputRef} />

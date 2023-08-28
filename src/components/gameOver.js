@@ -1,11 +1,14 @@
 import React from 'react';
-
 import './gameOver.css';
+
+import { useLocation } from 'react-router-dom';
 
 const Exit = new Event('Exit');
 const Restart = new Event('Restart');
 
-const GameOver = ({player}) => {
+const GameOver = () => {
+    const player = useLocation().state;
+
     function handleExit () {
         document.dispatchEvent(Exit);
     }
@@ -15,10 +18,10 @@ const GameOver = ({player}) => {
     }
 
     return (
-        <div class="gameOver">
-            <h1>Game Over {player.getName()}</h1>
-            <p>Final Score {player.getLastScore()}</p>
-            <p>Your High Score {player.getHighScore()}</p>
+        <div className="gameOver">
+            <h1>Game Over {player.name}</h1>
+            <p>Final Score {player.lastScore}</p>
+            <p>Your High Score {player.highScore}</p>
             <button onClick={handleRestart}>
                 Again
             </button>

@@ -1,45 +1,55 @@
-import { useRef } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom'; 
+import { useEffect } from 'react';
 import './App.css';
 
-import Game from './components/game';
+import { Routes, Route, useNavigate } from 'react-router-dom'; 
+
 import Player from './components/player';
 import Start from './components/start';
+import GameWrapper from './components/game';
 import GameOver from './components/gameOver';
 
 function App() {
   const player = new Player();
-  const game = new Game(player);
 
-  const bodyRef = useRef(null);
-
+  
   const navigate = useNavigate();
 
-  document.addEventListener('StartGame', () => {
-    navigate("/game");
-  });
+  useEffect(() => {
+    document.addEventListener('StartGame', (event) => {
+      player.setName(event.detail.name);
+      navigate("/game", getState());
+    });
+  
+    document.addEventListener('GameOver', (event) => {
+      player.setLastScore(event.detail.score);
+      player.setHighScore(event.detail.score);
+      navigate("/gameOver", getState());
+    });
+  
+    document.addEventListener('Restart', () => {
+      navigate("/game", getState());
+    })
+  
+    document.addEventListener('Exit', () => {
+      navigate("/");
+    })
+  }, []);
 
-  document.addEventListener('GameOver', () => {
-    navigate("/gameOver");
-  });
+  function getState () {
+    const name = player.getName();
+    const lastScore = player.getLastScore();
+    const highScore = player.getHighScore();
 
-  document.addEventListener('Restart', () => {
-    navigate("/game");
-  })
-
-  document.addEventListener('Exit', () => {
-    navigate("/");
-  })
+    return { state: { name, lastScore, highScore } };
+  }
 
   return (
     <div className="App">
-      <body ref={bodyRef}>
-          <Routes>
-            <Route exact path="/" element={<Start player={player} />} />
-            <Route exact path="/game" element={game.render()} />
-            <Route exact path="/gameOver" element={<GameOver player={player} />} />
-          </Routes>
-      </body>
+      <Routes>
+        <Route exact path="/" element={<Start />} />
+        <Route exact path="/game" element={<GameWrapper />} />
+        <Route exact path="/gameOver" element={<GameOver />} />
+      </Routes>
     </div>
   );
 }

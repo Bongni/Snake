@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './game.css';
 
 import Canvas from './canvas';
+import Player from './player';
 
 const HEIGHT = 400;
 const WIDTH = 400;
@@ -11,9 +12,18 @@ const BORDER_COLOR = 'black';
 const SNAKE_COLOR = 'green';
 const FOOD_COLOR = 'red';
 
-const GameOver = new Event('GameOver');
+const GameWrapper = () => {
+    const player = new Player();
+    const game = new Game(player);
+    
+    return (
+        <div>
+            {game.render()}
+        </div>
+    );
+}
 
-export default class Game extends Component {
+class Game extends Component {
     constructor (player) {
         super();
         this.player = player;
@@ -88,8 +98,7 @@ export default class Game extends Component {
     }
 
     gameOver () {
-        this.player.setLastScore(this.score);
-        this.player.setHighScore(this.score);
+        const GameOver = new CustomEvent('GameOver', { detail: { score: this.score } });
 
         document.dispatchEvent(GameOver);
     }
@@ -152,3 +161,5 @@ export default class Game extends Component {
         );
     }
 }
+
+export default GameWrapper;
