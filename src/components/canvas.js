@@ -1,22 +1,32 @@
 import React, { useEffect, useRef } from 'react';
 
+import './canvas.css';
+
 const Canvas = props => {
     const { main, height, width, ...rest } = props;
-    const canvasRef = useRef(null);
+    const boardRef = useRef(null);
 
     let notRunning = true;
 
     useEffect(() => {
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
+        const board = boardRef.current;
 
-        if(notRunning){
-            main(context);
+        const canvas = board.children[0];
+        const context = canvas.getContext('2d');
+        const scoreField = board.children[1];
+
+        if(notRunning && canvas && scoreField){
+            main(context, scoreField);
             notRunning = false;
         }
     }, [main]);
 
-    return <canvas ref={canvasRef} height={height} width={width} {...rest} />
+    return (
+        <div ref={boardRef}>
+            <canvas height={height} width={width} {...rest} />
+            <p></p>
+        </div>
+    );
 }
 
 export default Canvas;

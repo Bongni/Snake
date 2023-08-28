@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import './game.css';
 
 import Canvas from './canvas';
@@ -9,16 +8,23 @@ const WIDTH = 400;
 
 const BACKGROUND_COLOR = 'white';
 const BORDER_COLOR = 'black';
-const SNAKE_COLOR = 'blue';
+const SNAKE_COLOR = 'green';
+const FOOD_COLOR = 'red';
 
-
+const GameOver = new Event('GameOver');
 
 export default class Game extends Component {
-    constructor () {
+    constructor (player) {
         super();
-        this.snake = [{x: WIDTH / 2, y: HEIGHT / 2}, {x: WIDTH / 2 + 10, y: HEIGHT / 2}, {x: WIDTH / 2 + 20, y: HEIGHT / 2}];
+        this.player = player;
+
+        this.snake = [{x: WIDTH / 2, y: HEIGHT / 2}];
         this.dx = -10;
         this.dy = 0;
+
+        this.score = 0;
+
+        this.genFood();
     }
 
     clearCanvas(context) {
@@ -41,7 +47,51 @@ export default class Game extends Component {
     moveSnake() {
         const head = {x: this.snake[0].x + this.dx, y: this.snake[0].y + this.dy};
         this.snake.unshift(head);
-        this.snake.pop();
+
+        const eatenFood = head.x == this.foodx && head.y == this.foody;
+
+        if(eatenFood) {
+            this.genFood();
+            this.score++;
+        } else {
+            this.snake.pop();
+        }
+    }
+
+    updateScore (scoreField) {
+        scoreField.innerHTML = this.score;
+    }
+
+    genFood () {
+        this.foodx = Math.floor(Math.random() * WIDTH / 10) * 10;
+        this.foody = Math.floor(Math.random() * HEIGHT / 10) * 10;
+    }
+
+    drawFood (context) {
+        context.fillStyle = FOOD_COLOR;
+        context.fillRect(this.foodx, this.foody, 10, 10);
+    }
+
+    collision () {
+        const collisionWallx = this.snake[0].x >= WIDTH || this.snake[0].x < 0;
+        const collisionWally = this.snake[0].y >= HEIGHT || this.snake[0].y < 0;
+
+        let collisionSnake = false;
+        const [head, ...tail] = this.snake;
+        tail.forEach(elem => {
+            if(elem.x == head.x && elem.y == head.y) {
+                collisionSnake = true;
+            }
+        });
+
+        return collisionWallx || collisionWally || collisionSnake;
+    }
+
+    gameOver () {
+        this.player.setLastScore(this.score);
+        this.player.setHighScore(this.score);
+
+        document.dispatchEvent(GameOver);
     }
 
     render () {
@@ -74,15 +124,24 @@ export default class Game extends Component {
             }
         }, false);
 
-        const main = (context) => {
+        const main = (context, scoreField) => {
             setTimeout(() => {
                 this.clearCanvas(context);
 
                 this.moveSnake();
+
                 this.drawSnake(context);
+                this.drawFood(context);
+
+                this.updateScore(scoreField);
+
+                if(this.collision()) {
+                    this.gameOver();
+                    return;
+                }
 
                 /* Game loop */
-                main(context);
+                main(context, scoreField);
             }, 100);
         }
 
