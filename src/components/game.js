@@ -8,7 +8,7 @@ const HEIGHT = 400;
 const WIDTH = 400;
 
 const BACKGROUND_COLOR = 'white';
-const BORDER_COLOR = 'black';
+const SNAKE_HEAD_COLOR = 'darkgreen';
 const SNAKE_COLOR = 'green';
 const FOOD_COLOR = 'red';
 
@@ -41,16 +41,13 @@ class Game extends Component {
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         context.fillStyle = BACKGROUND_COLOR;
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-        
-        context.strokeStyle = BORDER_COLOR;
-        context.lineWidth = 2;
-        context.strokeRect(0, 0, context.canvas.width, context.canvas.height);
     }
 
     drawSnake(context) {
+        context.fillStyle = SNAKE_HEAD_COLOR;
         this.snake.forEach(element => {
-            context.fillStyle = SNAKE_COLOR
             context.fillRect(element.x, element.y, 10, 10);
+            context.fillStyle = SNAKE_COLOR;
         });
     }
 

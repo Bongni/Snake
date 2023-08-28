@@ -11,8 +11,9 @@ const Start = () => {
 
     return (
         <div className="start">
+            <h1>Snake</h1>
             <form>
-                <label htmlFor="name">Player name: </label>
+                <label htmlFor="name">Enter name: </label>
                 <input  id="name" 
                         type="text"
                         ref={inputRef} />

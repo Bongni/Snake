@@ -22,12 +22,14 @@ const GameOver = () => {
             <h1>Game Over {player.name}</h1>
             <p>Final Score {player.lastScore}</p>
             <p>Your High Score {player.highScore}</p>
-            <button onClick={handleRestart}>
-                Again
-            </button>
-            <button onClick={handleExit}>
-                I go home
-            </button>
+            <div className="buttons">
+                <button onClick={handleRestart}>
+                    Again
+                </button>
+                <button onClick={handleExit}>
+                    I go home
+                </button>
+            </div>
         </div>
     );
 }

@@ -23,7 +23,7 @@ const Canvas = props => {
     return (
         <div ref={boardRef}>
             <canvas height={height} width={width} {...rest} />
-            <p></p>
+            <h2></h2>
         </div>
     );
 }
