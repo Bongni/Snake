@@ -1,0 +1,12 @@
+.ranked {
+    display :flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    height: 100vh;
+
+    background-color: #0C243C;
+
+    color: white;
+}

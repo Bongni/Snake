@@ -3,10 +3,10 @@ export default class Player {
     #lastScore;
     #highScore;
 
-    constructor () {
-        this.#name = "";
-        this.#lastScore = 0;
-        this.#highScore = 0;
+    constructor (name, highScore = 0, lastScore = 0) {
+        this.#name = name;
+        this.#highScore = highScore;
+        this.#lastScore = lastScore;
     }
 
     getName () {
@@ -17,14 +17,6 @@ export default class Player {
         this.#name = name;
     }
 
-    getLastScore () {
-        return this.#lastScore
-    }
-
-    setLastScore (score) {
-        this.#lastScore = score;
-    }
-
     getHighScore () {
         return this.#highScore;
     }
@@ -32,5 +24,13 @@ export default class Player {
     setHighScore (score) {
         if(score > this.#highScore)
             this.#highScore = score;
+    }
+
+    getLastScore () {
+        return this.#lastScore
+    }
+
+    setLastScore (score) {
+        this.#lastScore = score;
     }
 }
