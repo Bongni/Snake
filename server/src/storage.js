@@ -1,8 +1,8 @@
-import RNFS from 'react-native-fs';
+import fs from 'fs'
 
-import Player from './player';
+import Player from './player.js';
 
-const PATH = '../resources/players';
+const PATH = './server/resources/players';
 
 function save (player) {
     const playerList = loadPlayerList();
@@ -22,37 +22,28 @@ function load (name) {
 function savePlayerList (playerList) {
     const json = JSON.stringify(playerList);
 
-    writeFile(PATH, json, (err) => {
-        if (err) throw err;
-        else
-            console.log("The file was updated.");
-    });
+    writeFile(PATH, json);
 }
 
 function loadPlayerList () {
-    const content = readFile(PATH, (err, input) => {
-        if (err) throw err;
-            console.log(input.toString());
+    return fs.readFile(PATH, "utf-8", (err, data) => {
+        if(err) {console.log(err)}
+        
+        if(data == "") {
+            return new Map();
+        }
+    
+        console.log("Content: " + data);
+    
+        return JSON.parse(data);
     });
-
-    if(content == "") {
-        return new Map();
-    }
-
-    return JSON.parse(content);
 }
 
 const writeFile = async (path, content) => {
-    try {
-        await RNFS.writeFile(path, content, "utf8");
+    await fs.writeFile(path, content, "utf8" , (err) => {
+        if(err) console.log(err);
         console.log("Written to file.");
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-const readFile = async (path) => {
-    return await RNFS.readFile(path);
+    });
 }
 
 export {load, save};

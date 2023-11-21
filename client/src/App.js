@@ -7,20 +7,15 @@ import Start from './components/start';
 import GameWrapper from './components/game';
 import GameOver from './components/gameOver';
 import Player from './components/player';
-import {save, load} from './components/storage';
 
 function App() {
-  var player = new Player("");
+  var player;
   
   const navigate = useNavigate();
 
   useEffect(() => {
     document.addEventListener('StartGame', (event) => {
-      player.setName(event.detail.name);
-
-      const p1 = load(event.detail.name);
-      console.log(p1.getName());
-
+      player = new Player(event.detail.name);
       navigate("/game", getState());
     });
   
@@ -34,8 +29,7 @@ function App() {
       navigate("/game", getState());
     })
   
-    document.addEventListener('Exit', () => {
-      player.setHighScore(0);
+    document.addEventListener('Exit', () => {      
       navigate("/");
     })
   }, []);

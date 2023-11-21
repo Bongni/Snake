@@ -1,14 +1,14 @@
-const express = require('express');
+import { load, save } from './src/storage.js';
+import express from 'express';
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
 
 app.get("/api", (req, res) => {
-    const name = req.query.name;
-    const highScore = 10;
+    const player = load(req.query.name);
 
-    res.json({ name: name, highScore: highScore });
+    res.json({ name: player.getName(), highScore: player.getHighScore() });
 })
 
 app.listen(PORT, () => {
