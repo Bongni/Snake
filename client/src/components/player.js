@@ -33,4 +33,10 @@ export default class Player {
     setLastScore (score) {
         this.#lastScore = score;
     }
+
+    reset() {
+        this.#name = "";
+        this.#highScore = 0;
+        this.#lastScore = 0;
+    }
 }

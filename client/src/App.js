@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 import { Routes, Route, useNavigate } from 'react-router-dom'; 
@@ -9,14 +9,23 @@ import GameOver from './components/gameOver';
 import Player from './components/player';
 
 function App() {
-  var player;
   
   const navigate = useNavigate();
+  const [player, setPlayer] = useState(new Player(""));
 
   useEffect(() => {
     document.addEventListener('StartGame', (event) => {
-      player = new Player(event.detail.name);
-      navigate("/game", getState());
+      const encodedName = encodeURIComponent(event.detail.name);
+
+      fetch(`http://localhost:3001/get?name=${encodedName}`)
+        .then((res) => res.json())
+        .then((data) => {
+          player.setName(data.name);
+          player.setHighScore(data.highScore);
+
+          navigate("/game", getState(player));
+        })
+        .catch(err => console.log(err.message));
     });
   
     document.addEventListener('GameOver', (event) => {
@@ -27,19 +36,30 @@ function App() {
   
     document.addEventListener('Restart', () => {
       navigate("/game", getState());
-    })
+    });
   
-    document.addEventListener('Exit', () => {      
-      navigate("/");
-    })
+    document.addEventListener('Exit', () => {
+      fetch(`http://localhost:3001/post`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: player.getName(),
+          highScore: player.getHighScore()
+        })
+      }).then(() => {
+          player.reset();
+          navigate("/");
+        })
+        .catch((err) => console.log(err.message));
+    });
   }, []);
 
   function getState () {
-    const name = player.getName();
-    const lastScore = player.getLastScore();
-    const highScore = player.getHighScore();
-
-    return { state: { name, lastScore, highScore } };
+    return { state: { 
+      name: player.getName(),
+      lastScore: player.getLastScore(),
+      highScore: player.getHighScore() 
+    } };
   }
 
   return (
